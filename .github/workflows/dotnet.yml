@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  MY_SECRET: ${{ secrets.CONNECT_WEBSOCKET }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,13 +22,11 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-      env:
-        MY_SECRET: ${{ secrets.CONNECT_WEBSOCKET }}
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Check Secret
       run: |
-        if [ -z "${{ secrets.CONNECT_WEBSOCKET }}" ]; then
+        if [ -z "$MY_SECRET" ]; then
           echo "Secret is not set"
         else
           echo "Secret is set"
